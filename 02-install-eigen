@@ -1,0 +1,30 @@
+#!/usr/bin/env bash
+set -euxo pipefail
+command -v sudo > /dev/null 2>&1 || function sudo { eval $@ ; }
+
+sudo apt update && sudo apt install -y lsb-release
+
+# Install Eigen and friends
+if [[ "$(lsb_release -sr)" == "18.04" ]]; then
+  sudo apt update && sudo apt install -y \
+  libblas-dev \
+  liblapack-dev \
+  libeigen3-dev
+else
+  tag=${Eigen_VERSION:-3.3.4}
+  sudo apt update && sudo apt install -y \
+    curl \
+    liblapack-dev
+    
+  curl -fsL https://bitbucket.org/eigen/eigen/get/${tag}.tar.gz \
+  | tar -zx
+  mv eigen* eigen-${tag}
+  mkdir -p ./eigen-${tag}/build
+  cd ./eigen-${tag}/build
+  cmake .. -DCMAKE_BUILD_TYPE=Release
+  cmake --build . --target blas
+  sudo cmake --build . --target install
+  cd blas
+  sudo cmake --build . --target install
+fi
+

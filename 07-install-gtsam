@@ -1,0 +1,16 @@
+#!/usr/bin/env bash
+command -v sudo > /dev/null 2>&1 || function sudo { eval ${@@Q}; }
+
+set -euxo pipefail
+
+git clone --depth 1 https://bitbucket.org/gtborg/gtsam.git
+mkdir -p gtsam/build
+cd $_
+ cmake .. \
+  -DGTSAM_BUILD_TESTS=OFF \
+  -DGTSAM_WITH_EIGEN_MKL=OFF
+cmake --build . -- -j$(nproc)
+sudo cmake --build . --target install
+cd ../..
+rm -rf gtsam
+

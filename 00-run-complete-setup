@@ -1,0 +1,21 @@
+#!/usr/bin/env bash
+set -euxo pipefail
+
+# Install text to speach util
+sudo apt-get update && sudo apt-get install -y \
+  espeak
+
+./01-install-opencv-dependencies && \
+./02-install-eigen               && \
+./03-build-opencv                && \
+./04-install-sophus              && \
+./05-install-geographiclib       && \
+./06-install-realsense           && \
+./07-install-gtsam
+
+# Export library path
+sudo ldconfig
+
+# Notify
+espeak "Installation complete"
+

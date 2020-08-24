@@ -1,0 +1,15 @@
+#!/usr/bin/env bash
+topdir=$(pwd)
+set -euxo pipefail
+command -v sudo > /dev/null 2>&1 || function sudo { eval $@ ; }
+
+git clone https://github.com/strasdat/Sophus.git
+mkdir -p ./Sophus/build
+cd ./Sophus/build
+cmake .. -DCMAKE_BUILD_TYPE=Release -DBUILD_TESTS=OFF
+cmake --build . 
+sudo cmake --build . --target install
+
+cd ${topdir}
+rm -rf Sophus ~/.cmake/packages/Sophus
+
