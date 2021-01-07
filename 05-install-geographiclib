@@ -4,13 +4,9 @@ tag=${GGLIB_VERSION:-1.49}
 command -v sudo > /dev/null 2>&1 || function sudo { eval $@ ; }
 
 sudo apt install curl
-curl -fsL https://downloads.sourceforge.net/project/geographiclib/distrib/GeographicLib-${tag}.tar.gz \
+curl -fsL https://sourceforge.net/projects/geographiclib/files/distrib/GeographicLib-${tag}.tar.gz \
 | tar --xform 's/GeographicLib[0-9.-]+/geographiclib/gx' -zx
 
-mkdir -p geographiclib/build
-cd geographiclib/build
-cmake .. -DCMAKE_BUILD_TYPE=Release
-sudo cmake --build . --config release --target install
-cd ${topdir}
-rm -rf geographiclib
-
+cmake -S geographiclib -B geographiclib/build -DCMAKE_BUILD_TYPE=Release
+sudo cmake --build geographiclib/build --config release --target install
+sudo rm -rf geographiclib
