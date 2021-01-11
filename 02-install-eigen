@@ -4,7 +4,7 @@ set -euxo pipefail
 command -v sudo > /dev/null 2>&1 || { apt update && apt install --no-install-recommends -y sudo; }
 
 # Install Eigen and friends
-source /etc/os-release
+VERSION_ID=$( grep -Po '(?<=VERSION_ID=")[\d.]+' /etc/os-release )
 
 if [[ "${VERSION_ID}" == "18.04" ]]; then
   sudo apt update && sudo apt install -y \
