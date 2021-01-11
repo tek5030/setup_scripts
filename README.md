@@ -17,6 +17,16 @@ It is assumed that you have a fresh install of Ubuntu 18.04 with nothing else on
 
 It should be ok to just copy-paste the commands into your terminal in order to avoid typos.
 
+In the commands you will often see lines ending with a backslash `\`, like
+```bash
+some_command \
+  more \
+  things
+```
+This is just a line continuation symbol, which is used for clarity and readability, so the example above is equivalent to
+```bash
+some_command more things
+```
 
 ## Installation step by step
 
@@ -29,7 +39,7 @@ Most repositories are providing a public key to authenticate downloaded packages
 If you are curious, read more about repositories [on the internet][How To Add Apt Repository In Ubuntu].
 
 #### Add Kitware repository for installation of newer CMake [[3]][cmake]
-The CMake version available from the default repository is version 3.10, but as CMake frequently releases important updates and bugfixes, we have nothing to lose and much to win by installing a newer version. The easiest way to do this is to add their APT repository and download from there.
+The CMake version available from the default repository is version 3.10, but as CMake frequently releases important updates and bugfixes, we have nothing to lose and much to win by installing a newer version. The easiest way to do this is to add their APT repository and install from there.
 
 ```bash
 # Install required packages in order to download and install the new repo.
@@ -43,7 +53,7 @@ sudo apt-add-repository 'deb https://apt.kitware.com/ubuntu/ bionic main'
 ### Add packages
 
 #### Install compiler, cmake, curl and git
-we will install a few basic tools before proceeding with installation of course dependencies.
+we will install a few basic tools before proceeding with installation of the dependencies. The `-y` (or `--yes`) means that we don't want to be propmpted for whether we _really_ want to install or not.
 
 ```bash
 sudo apt install -y \
@@ -55,7 +65,7 @@ sudo apt install -y \
 ```
 
 #### Install Eigen
-We can install a sufficient version of Eigen with `apt`.
+We can install a sufficient version of Eigen with `apt`. In addition, we install blas and lapack.
 ```bash
 sudo apt install -y \
   libblas-dev \
@@ -66,6 +76,10 @@ sudo apt install -y \
 #### Install Sophus
 Sophus must be installed from source. We use `git` and `cmake` for this. Use `man cmake` or `cmake --help` in order to learn more.
 Note that Eigen must be installed before we try to install Sophus.
+We specify some options to CMake in order to configure the build according to our needs.  A library may support more or less options, but the three we see below are pretty common for many libraries.
+
+On the second last line, we utilize `cmake` also for compiling the software, using the `--build` flag. (In Ubuntu, it is usually the same as using `make`, so you can assume that `cmake --build .` is equal to `make`. Anyhow, the actual compiler (like `gcc`, `g++` or `clang` will eventually be called under the hood, but that is another story).
+
 ```bash
 # Clone the repository (download the code) from GitHub.
 git clone --depth 1 https://github.com/strasdat/Sophus.git
@@ -81,32 +95,43 @@ sudo cmake --build Sophus/build --target install
 sudo rm -rf Sophus ~/.cmake/packages/Sophus
 ```
 
-###### Install GeographicLib
+#### Install GeographicLib
 We are alo installing GeographicLib from source, but instead of cloning via `git` we are downloading the source code using `curl`.
-Using the pipe, we are renaming the downloaded the folder for convenience.
-```bash
-curl -fsL https://sourceforge.net/projects/geographiclib/files/distrib/GeographicLib-1.51.tar.gz \
-| tar --xform 's/GeographicLib[0-9.-]+/geographiclib/gx' -zx
+Using the pipe, we are immedately extracting the downloaded `tar.gz` without it hanging around. It will take some time.
 
-cmake -S geographiclib -B geographiclib/build -DCMAKE_BUILD_TYPE=Release
+```bash
+curl -fL# https://sourceforge.net/projects/geographiclib/files/distrib/GeographicLib-1.51.tar.gz \
+| tar -zx
+
+cmake -S GeographicLib-1.51 -B GeographicLib-1.51/build -DCMAKE_BUILD_TYPE=Release
 # Copy the files to /usr/local/...
-sudo cmake --build geographiclib/build --config release --target install
+sudo cmake --build GeographicLib-1.51/build --config Release --target install
 # Delete the downloaded files
-sudo rm -rf geographiclib
+sudo rm -rf GeographicLib-1.51
 ```
 
-###### Install GTSAM
+#### Install GTSAM
+GTSAM has some additional dependencies that we must install before trying to compile it.
+```bash
+sudo apt install -y \
+  libboost-all-dev \
+  libtbb2 \
+  libtbb-dev
+```
+Now we can go on.
 ```bash
 git clone --depth 1 https://github.com/borglab/gtsam.git
 cmake -S gtsam -B gtsam/build \
- -DGTSAM_BUILD_TESTS=OFF \
- -DGTSAM_WITH_EIGEN_MKL=OFF
+  -DGTSAM_BUILD_EXAMPLES_ALWAYS=OFF \
+  -DGTSAM_BUILD_TESTS=OFF \
+  -DGTSAM_WITH_EIGEN_MKL=OFF
 cmake --build gtsam/build -- -j$(nproc)
 sudo cmake --build gtsam/build --target install
 rm -rf gtsam
 ```
 
-###### Install OpenCV dependencies
+#### Install OpenCV 
+##### Install dependencies
 ```bash
 # Install compiler
 sudo apt-get update && sudo apt-get install -y \
@@ -146,9 +171,11 @@ sudo apt install -y \
   libcanberra-gtk-module \
   libcanberra-gtk3-module
 ```
-###### Compile OpenCV
+
+##### Compile OpenCV
 ```bash
 # Convenience variable
+# If variable OpenCV_VERSION is not set, set it to 4.0.1
 tag=${OpenCV_VERSION:-4.0.1}
 
 # Download opencv sources
@@ -156,7 +183,7 @@ git clone -b ${tag} --depth 1 https://github.com/opencv/opencv.git opencv-${tag}
 git clone -b ${tag} --depth 1 https://github.com/opencv/opencv_contrib.git opencv_contrib-${tag}
 
 mkdir opencv-${tag}/build
-cd $_
+cd $_  # $_ is a special variable set to last arg of last command.
 
 # Build OpenCV
 cmake .. \
@@ -193,46 +220,24 @@ cd ../../
 rm -rf opencv*
 ```
 
-
-
-
-
 ## Setup on Windows 
 Tek5030 does not officially support Windows, but we have provided an Ubuntu image with dependencies already installed, which you can use with VirutalBox.
 
+## Automated installation
+The scripts in this repo are created to install everything needed, and is tested on Ubuntu 18.04. You can run all scripts in one go, or choose to run each script separately.
 
-### Links to installation pages
-#### CMake
-https://cmake.org/install/
-#### OpenCV
-https://cv-tricks.com/how-to/installation-of-opencv-4-1-0-in-windows-10-from-source/
-https://docs.opencv.org/4.1.0/d3/d52/tutorial_windows_install.html
-#### GeographicLib
-https://geographiclib.sourceforge.io/html/install.html
-#### GTSAM
-https://borg.cc.gatech.edu/download.html
-#### RealSense
-https://github.com/IntelRealSense/librealsense/blob/master/doc/distribution_windows.md
-
-
-
-## Setup on Ubuntu 18.04
-The scripts in this repo are created to install everything needed. 
-
+### Run all scripts
 ```bash
-sudo ./00-run-complete-setup
+./00-run-complete-setup
 ```
 
-You can also choose to run each script separately.
+### Run individual scripts,
+For example
+```bash
+./04-build-opencv
+```
 
 ---
 
-[How To Add Apt Repository In Ubuntu](https://linuxize.com/post/how-to-add-apt-repository-in-ubuntu/)
-
-
-
-[techrep]: https://www.techrepublic.com/article/how-to-create-a-custom-ubuntu-iso-with-cubic/
-[multiverse]: https://linuxconfig.org/how-to-enable-disable-universe-multiverse-and-restricted-repository-on-ubuntu-20-04-lts-focal-fossa
+[How To Add Apt Repository In Ubuntu]: https://linuxize.com/post/how-to-add-apt-repository-in-ubuntu/
 [cmake]: https://apt.kitware.com/
-[chroot]: https://www.howtogeek.com/441534/how-to-use-the-chroot-command-on-linux/
-[tek5030/setup_scripts]: https://github.com/tek5030/setup_scripts
