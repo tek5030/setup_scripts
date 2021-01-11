@@ -1,11 +1,12 @@
 #!/usr/bin/env bash
 set -euxo pipefail
-command -v sudo > /dev/null 2>&1 || function sudo { eval $@ ; }
 
-sudo apt update && sudo apt install -y lsb-release
+command -v sudo > /dev/null 2>&1 || { apt update && apt install --no-install-recommends -y sudo; }
 
 # Install Eigen and friends
-if [[ "$(lsb_release -sr)" == "18.04" ]]; then
+source /etc/os-release
+
+if [[ "${VERSION_ID}" == "18.04" ]]; then
   sudo apt update && sudo apt install -y \
   libblas-dev \
   liblapack-dev \
@@ -13,10 +14,10 @@ if [[ "$(lsb_release -sr)" == "18.04" ]]; then
 else
   tag=${Eigen_VERSION:-3.3.4}
   sudo apt update && sudo apt install -y \
+    cmake \
     curl \
     liblapack-dev
-    
-  curl -fsL https://bitbucket.org/eigen/eigen/get/${tag}.tar.gz \
+  curl -fsL https://gitlab.com/libeigen/eigen/-/archive/${tag}/eigen-${tag}.tar.gz \
   | tar -zx
   mv eigen* eigen-${tag}
   mkdir -p ./eigen-${tag}/build

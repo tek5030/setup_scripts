@@ -1,16 +1,25 @@
 #!/usr/bin/env bash
-command -v sudo > /dev/null 2>&1 || function sudo { eval ${@@Q}; }
-
 set -euxo pipefail
 
+command -v sudo > /dev/null 2>&1 || { apt update && apt install --no-install-recommends -y sudo; }
+
+# Install boost
+sudo apt install -y \
+  build-essential \
+  cmake \
+  git \
+  libboost-all-dev \
+  libtbb2 \
+  libtbb-dev
+  
 git clone --depth 1 https://github.com/borglab/gtsam.git
 mkdir -p gtsam/build
 cd $_
  cmake .. \
+  -DGTSAM_BUILD_EXAMPLES_ALWAYS=OFF \
   -DGTSAM_BUILD_TESTS=OFF \
   -DGTSAM_WITH_EIGEN_MKL=OFF
 cmake --build . -- -j$(nproc)
 sudo cmake --build . --target install
 cd ../..
 rm -rf gtsam
-

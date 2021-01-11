@@ -1,0 +1,42 @@
+default:
+  image: ubuntu:18.04
+  before_script:
+    - echo 'APT::Get::Assume-Yes "true";' >> /etc/apt/apt.conf.d/90-auto-yes
+    - apt update -qq && apt install -qqy sudo
+    - echo 'Defaults  env_keep += "DEBIAN_FRONTEND"' >> /etc/sudoers
+
+variables:
+  DEBIAN_FRONTEND: "noninteractive"
+
+00-run-complete-setup:
+  script:
+    - ./${CI_JOB_NAME}
+
+01-install-newer-cmake:
+  script:
+    - ./${CI_JOB_NAME}
+
+02-install-eigen:
+  script:
+    - ./${CI_JOB_NAME}
+
+03-install-sophus:
+  script:
+    - ./${CI_JOB_NAME}
+
+04-build-opencv:
+  script:
+    - ./${CI_JOB_NAME}
+
+05-install-geographiclib:
+  script:
+    - ./${CI_JOB_NAME}
+
+06-install-gtsam:
+  script:
+    - ./${CI_JOB_NAME}
+
+07-install-realsense:
+  script:
+    - ./${CI_JOB_NAME}
+
