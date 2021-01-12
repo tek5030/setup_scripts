@@ -234,6 +234,7 @@ Now you can start Clion by typing
 ```bash
 clion &   # The ampersand makes the program run in the background, so you can close the Terminal window.
 ```
+or launching it from the Applications menu in the lower right corner of your desktop (the 3x3 dots).
 
 ## Setup on Windows 
 Tek5030 does not officially support Windows, but we have provided an Ubuntu image with dependencies already installed, which you can use with VirutalBox.
