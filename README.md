@@ -38,7 +38,7 @@ Most repositories are providing a public key to authenticate downloaded packages
 
 If you are curious, read more about repositories [on the internet][How To Add Apt Repository In Ubuntu].
 
-#### Add Kitware repository for installation of newer CMake [[3]][cmake]
+#### Add Kitware repository for installation of newer CMake [[1]][cmake]
 The CMake version available from the default repository is version 3.10, but as CMake frequently releases important updates and bugfixes, we have nothing to lose and much to win by installing a newer version. The easiest way to do this is to add their APT repository and install from there.
 
 ```bash
@@ -220,6 +220,21 @@ cd ../../
 rm -rf opencv*
 ```
 
+### Install CLion
+In this course, we are using the CLion [[2]][clion] IDE from JetBrains. Students at UiO can apply for a free Educational License [here [3]][student-license].
+
+Installing CLion from an Ubuntu Terminal is easy [[4]][install-clion]. You can install it as a self-contained snap package, and since snaps update automatically, your CLion installation will always be up to date.
+
+```bash
+sudo snap install clion --classic
+```
+The `--classic` option is required because the CLion snap requires full access to the system, like a traditionally packaged application.
+
+Now you can start Clion by typing
+```bash
+clion &   # The ampersand makes the program run in the background, so you can close the Terminal window.
+```
+
 ## Setup on Windows 
 Tek5030 does not officially support Windows, but we have provided an Ubuntu image with dependencies already installed, which you can use with VirutalBox.
 
@@ -241,3 +256,6 @@ For example
 
 [How To Add Apt Repository In Ubuntu]: https://linuxize.com/post/how-to-add-apt-repository-in-ubuntu/
 [cmake]: https://apt.kitware.com/
+[clion]: https://www.jetbrains.com/clion/
+[student-license]: https://www.jetbrains.com/community/education/#students
+[install-clion]: https://www.jetbrains.com/help/clion/installation-guide.html#snap
