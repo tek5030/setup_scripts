@@ -237,7 +237,7 @@ clion &   # The ampersand makes the program run in the background, so you can cl
 or launching it from the Applications menu in the lower right corner of your desktop (the 3x3 dots).
 
 ## Setup on other Operating Systems 
-Tek5030 does not officially support Windows, Mac or other OSs, but we have provided an Ubuntu image with dependencies already installed, which you can use with VirtualBox. Please seek more information on the course page.
+Tek5030 does not officially support Windows, OS X or other OSs, but we have provided an Ubuntu image with dependencies already installed, which you can use with VirtualBox. Please seek more information on the course page.
 
 ## Automated installation
 The scripts in this repo are created to install everything needed, and is tested on Ubuntu 18.04. You can run all scripts in one go, or choose to run each script separately.
