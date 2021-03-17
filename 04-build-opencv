@@ -77,8 +77,8 @@ cmake .. \
 -DBUILD_opencv_python3=ON \
 -DBUILD_opencv{\
 bgsegm,bioinspired,ccalib,cnn_3dobj,cvv,datasets,dnn_objdetect,dnns_easily_fooled,dpm,face,freetype,\
-fuzzy,hdf,hfs,img_hash,line_descriptor,matlab,optflow,ovis,phase_unwrapping,plot,reg,rgbd,saliency,sfm,shape,\
-structured_light,superres,surface_matching,text,tracking,videostab}=OFF \
+fuzzy,hdf,hfs,img_hash,line_descriptor,matlab,optflow,ovis,phase_unwrapping,reg,rgbd,saliency,sfm,shape,\
+structured_light,superres,surface_matching,text,videostab}=OFF \
 -DBUILD_opencv_cuda{bgsegm,codec,filters,legacy,objdetect,stereo}=OFF \
 -DBUILD_opencv_cudev=OFF 
 
