@@ -40,14 +40,24 @@ If you are curious, read more about repositories [on the internet][How To Add Ap
 
 #### Add Kitware repository for installation of newer CMake [[1]][cmake]
 The CMake version available from the default repository is version 3.10, but as CMake frequently releases important updates and bugfixes, we have nothing to lose and much to win by installing a newer version. The easiest way to do this is to add their APT repository and install from there.
+The procedure is updated from time to time, so it is wise to check out [https://apt.kitware.com/][cmake] to see the latest and greatest.
 
 ```bash
 # Install required packages in order to download and install the new repo.
-sudo apt install apt-transport-https ca-certificates gnupg software-properties-common wget
+sudo apt update
+sudo apt install gpg wget
+
 # Download and install the key
-wget -O - https://apt.kitware.com/keys/kitware-archive-latest.asc 2>/dev/null | gpg --dearmor - | sudo tee /etc/apt/trusted.gpg.d/kitware.gpg >/dev/null
+wget -O - https://apt.kitware.com/keys/kitware-archive-latest.asc 2>/dev/null | gpg --dearmor - | sudo tee /usr/share/keyrings/kitware-archive-keyring.gpg >/dev/null
+
 # Add the repository
-sudo apt-add-repository 'deb https://apt.kitware.com/ubuntu/ bionic main'
+echo 'deb [signed-by=/usr/share/keyrings/kitware-archive-keyring.gpg] https://apt.kitware.com/ubuntu/ bionic main' | sudo tee /etc/apt/sources.list.d/kitware.list >/dev/null
+sudo apt update
+
+# Install the kitware-archive-keyring package to ensure that your keyring stays up to date as they rotate keys:
+sudo rm /usr/share/keyrings/kitware-archive-keyring.gpg
+sudo apt install kitware-archive-keyring
+
 ```
 
 ### Add packages
