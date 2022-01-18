@@ -1,7 +1,8 @@
 #!/usr/bin/env bash
 set -euxo pipefail
-
 command -v sudo > /dev/null 2>&1 || { apt update && apt install --no-install-recommends -y sudo; }
+
+tag=${GTSAM_VERSION:-4.1.1}
 
 # Install boost
 sudo apt install -y \
@@ -11,15 +12,17 @@ sudo apt install -y \
   libboost-all-dev \
   libtbb2 \
   libtbb-dev
-  
-git clone --depth 1 https://github.com/borglab/gtsam.git
-mkdir -p gtsam/build
-cd $_
-cmake .. \
+
+# Download opencv sources
+[[ ! -d "gtsam" ]] && \
+git clone -b ${tag} --depth 1 https://github.com/borglab/gtsam.git
+
+cmake -S gtsam -B gtsam/build \
   -DGTSAM_BUILD_EXAMPLES_ALWAYS=OFF \
   -DGTSAM_BUILD_TESTS=OFF \
+  -DGTSAM_BUILD_WITH_MARCH_NATIVE=OFF \
+  -DGTSAM_USE_SYSTEM_EIGEN=ON \
   -DGTSAM_WITH_EIGEN_MKL=OFF
-cmake --build . -- -j$(nproc)
-sudo cmake --build . --target install
-cd ../..
+cmake --build gtsam/build -- -j$(nproc)
+sudo cmake --build gtsam/build --target install
 rm -rf gtsam

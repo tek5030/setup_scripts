@@ -1,7 +1,5 @@
 #!/usr/bin/env bash
-topdir=$(pwd)
 set -euxo pipefail
-
 command -v sudo > /dev/null 2>&1 || { apt update && apt install --no-install-recommends -y sudo; }
 
 SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
@@ -10,19 +8,17 @@ ${SCRIPT_DIR}/02-install-eigen
 sudo apt update && sudo apt install -y \
   build-essential \
   git \
-  cmake
+  cmake \
+  libfmt-dev
 
 [[ ! -d "Sophus" ]] && git clone --depth 1 https://github.com/strasdat/Sophus.git
 
-mkdir -p ./Sophus/build
-cd ./Sophus/build
-cmake .. \
+cmake -S Sophus -B Sophus/build \
   -DCMAKE_BUILD_TYPE=Release \
-  -DBUILD_EXAMPLES=OFF \
-  -DBUILD_TESTS=OFF
-cmake --build . 
-sudo cmake --build . --target install
+  -DBUILD_SOPHUS_EXAMPLES=OFF \
+  -DBUILD_SOPHUS_TESTS=OFF
+cmake --build Sophus/build
+sudo cmake --build Sophus/build --target install
 
-cd ${topdir}
 rm -rf Sophus ~/.cmake/packages/Sophus
 
