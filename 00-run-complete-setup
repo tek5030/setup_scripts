@@ -1,10 +1,10 @@
 #!/usr/bin/env bash
 set -euxo pipefail
-
-export OpenCV_VERSION=4.0.1
-export GGLIB_VERSION=1.51
-
 command -v sudo > /dev/null 2>&1 || { apt update && apt install --no-install-recommends -y sudo; }
+
+export OpenCV_VERSION=4.5.5
+export GGLIB_VERSION=1.51
+export GTSAM_VERSION=4.1.1
 
 ./01-install-newer-cmake   && \
 ./02-install-eigen         && \

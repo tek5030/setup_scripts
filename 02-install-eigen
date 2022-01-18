@@ -1,6 +1,5 @@
 #!/usr/bin/env bash
 set -euxo pipefail
-
 command -v sudo > /dev/null 2>&1 || { apt update && apt install --no-install-recommends -y sudo; }
 
 # Install Eigen and friends
