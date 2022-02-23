@@ -13,12 +13,12 @@ sudo apt update && sudo apt install -y \
 
 [[ ! -d "Sophus" ]] && git clone --depth 1 https://github.com/strasdat/Sophus.git
 
-cmake -S Sophus -B Sophus/build \
+mkdir -p Sophus/build && cd $_
+cmake .. \
   -DCMAKE_BUILD_TYPE=Release \
   -DBUILD_SOPHUS_EXAMPLES=OFF \
   -DBUILD_SOPHUS_TESTS=OFF
-cmake --build Sophus/build
-sudo cmake --build Sophus/build --target install
-
+cmake --build .
+sudo cmake --build . --target install
+cd ../..
 rm -rf Sophus ~/.cmake/packages/Sophus
-

@@ -72,11 +72,12 @@ bgsegm,bioinspired,ccalib,cnn_3dobj,cvv,datasets,dnn_objdetect,dnns_easily_foole
 fuzzy,hdf,hfs,img_hash,line_descriptor,matlab,optflow,ovis,phase_unwrapping,reg,rgbd,saliency,sfm,shape,\
 structured_light,superres,surface_matching,text,videostab}=OFF \
 -DBUILD_opencv_cuda{bgsegm,codec,filters,legacy,objdetect,stereo}=OFF \
--DBUILD_opencv_cudev=OFF 
+-DBUILD_opencv_cudev=OFF \
+-DCMAKE_INSTALL_PREFIX=install
 
 cmake --build opencv-${tag}/build --config release -- -j $(nproc) -Wno-cpp
 
-sudo cmake --build opencv-${tag}/build --target install
+cmake --build opencv-${tag}/build --target install
 
 if [[ -f /.dockerenv ]]; then 
     rm -rf opencv*
