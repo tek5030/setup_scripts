@@ -22,5 +22,6 @@ else
   cmake --build ./eigen-${tag}/build --target blas -- -j$(nproc)
   sudo cmake --build ./eigen-${tag}/build --target install
   sudo cmake --build ./eigen-${tag}/build/blas --target install
+  rm -rf eigen*
 fi
 
