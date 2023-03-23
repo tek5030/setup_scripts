@@ -19,7 +19,7 @@ else
   curl -fsL https://gitlab.com/libeigen/eigen/-/archive/${tag}/eigen-${tag}.tar.gz \
   | tar -zx
   cmake -S ./eigen-${tag} -B ./eigen-${tag}/build -DCMAKE_BUILD_TYPE=Release
-  cmake --build ./eigen-${tag}/build --target blas
+  cmake --build ./eigen-${tag}/build --target blas -- -j$(nproc)
   sudo cmake --build ./eigen-${tag}/build --target install
   sudo cmake --build ./eigen-${tag}/build/blas --target install
 fi
