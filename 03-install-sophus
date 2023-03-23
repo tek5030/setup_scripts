@@ -11,14 +11,15 @@ sudo apt update && sudo apt install -y \
   cmake \
   libfmt-dev
 
-[[ ! -d "Sophus" ]] && git clone --depth 1 https://github.com/strasdat/Sophus.git
-
-cmake -S Sophus -B Sophus/build \
+tag=${sophus_VERSION:-1.22.10}
+url=https://github.com/strasdat/Sophus/archive/refs/tags/${tag}.tar.gz
+curl -fsL "${url}" | tar -zx
+cmake -S ./Sophus-${tag} -B ./Sophus-${tag}/build \
   -DCMAKE_BUILD_TYPE=Release \
   -DBUILD_SOPHUS_EXAMPLES=OFF \
   -DBUILD_SOPHUS_TESTS=OFF
-cmake --build Sophus/build
-sudo cmake --build Sophus/build --target install
+cmake --build Sophus-${tag}/build
+sudo cmake --build Sophus-${tag}/build --target install
 
-rm -rf Sophus ~/.cmake/packages/Sophus
+rm -rf Sophus* ~/.cmake/packages/Sophus
 

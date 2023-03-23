@@ -11,20 +11,17 @@ if [[ "${VERSION_ID}" == "18.04" ]]; then
   liblapack-dev \
   libeigen3-dev
 else
-  tag=${Eigen_VERSION:-3.3.4}
+  tag=${Eigen_VERSION:-3.4.0}
   sudo apt update && sudo apt install -y \
     cmake \
     curl \
     liblapack-dev
   curl -fsL https://gitlab.com/libeigen/eigen/-/archive/${tag}/eigen-${tag}.tar.gz \
   | tar -zx
-  mv eigen* eigen-${tag}
-  mkdir -p ./eigen-${tag}/build
-  cd ./eigen-${tag}/build
-  cmake .. -DCMAKE_BUILD_TYPE=Release
-  cmake --build . --target blas
-  sudo cmake --build . --target install
-  cd blas
-  sudo cmake --build . --target install
+  cmake -S ./eigen-${tag} -B ./eigen-${tag}/build -DCMAKE_BUILD_TYPE=Release
+  cmake --build ./eigen-${tag}/build --target blas -- -j$(nproc)
+  sudo cmake --build ./eigen-${tag}/build --target install
+  sudo cmake --build ./eigen-${tag}/build/blas --target install
+  rm -rf eigen*
 fi
 
