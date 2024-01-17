@@ -1,0 +1,66 @@
+---
+- name: Docker | Install dependencies
+  become: true
+  ansible.builtin.apt:
+    pkg: "{{ docker_apt_dependencies }}"
+    state: present
+
+- name: Docker | APT repo
+  become: true
+  block:
+    - name: Docker | apt key
+      ansible.builtin.apt_key:
+        url: "{{ docker_apt_key_url }}"
+        keyring: "{{ docker_apt_keyring }}"
+        state: present
+
+    - name: Docker | apt repository
+      ansible.builtin.apt_repository:
+        repo: "{{ docker_apt_repository }}"
+        filename: docker
+        state: present
+
+- name: Docker packages
+  become: true
+  ansible.builtin.apt:
+    pkg: "{{ docker_apt_packages }}"
+    state: present
+    update_cache: true
+
+- name: Ensure docker users are added to the docker group.
+  become: true
+  ansible.builtin.user:
+    name: "{{ ansible_user }}"
+    groups: docker
+    append: true
+
+- name: Reset ssh connection to apply user changes.
+  ansible.builtin.meta: reset_connection
+
+# https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/latest/install-guide.html
+- name: NVIDIA Container Toolkit
+  when: docker_nvidia_docker
+  become: true
+  block:
+    - name: NVIDIA Container Toolkit | apt key
+      ansible.builtin.apt_key:
+        url: "{{ docker_nvidia_apt_key_url }}"
+        keyring: "{{ docker_nvidia_apt_keyring }}"
+        state: present
+
+    - name: NVIDIA Container Toolkit | apt repository
+      ansible.builtin.apt_repository:
+        repo: "{{ docker_nvidia_apt_repository }}"
+        filename: "nvidia-container-toolkit"
+        state: present
+        update_cache: true
+
+    - name: NVIDIA Container Toolkit | apt install
+      ansible.builtin.apt:
+        pkg:
+          - nvidia-container-toolkit
+        state: present
+      notify:
+        - Enable nvidia runtime
+        - Restart docker
+...

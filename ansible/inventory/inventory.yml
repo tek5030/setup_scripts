@@ -1,0 +1,13 @@
+---
+labtops:
+  hosts:
+    "ITS-LAP[01:10]":
+       ansible_host: "{{ inventory_hostname }}.local"
+jetsons:
+  hosts:
+    "its-nx-[01:15]":
+      ansible_host: "192.168.107.{{ 31 + inventory_hostname.split('.')[0][-2:]|int }}" 
+dockers:
+  hosts:
+    container:
+...

@@ -1,0 +1,12 @@
+---
+scripts_destination: ".."
+
+scripts_sophus_tag:
+scripts_opencv_tag: "4.9.0"
+scripts_gtsam_tag: "4.2"
+
+scripts_opencv_install_prefix: "/usr/local"
+scripts_opencv_with_cuda: false
+scripts_opencv_cuda_toolkit_root_dir: "/usr/local/cuda"
+scripts_opencv_cuda_arch_bin: None
+...

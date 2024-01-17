@@ -1,0 +1,9 @@
+---
+- name: "Sophus : Generate build script"
+  ansible.builtin.template:
+    src: sophus.j2
+    dest: "{{ scripts_destination }}/{{ scripts_names.sophus }}"
+    mode: '700'
+    owner: "{{ ansible_user }}"
+  notify: Install sophus
+...

@@ -1,5 +1,5 @@
 default:
-  image: ubuntu:18.04
+  image: ubuntu:22.04
   before_script:
     - echo 'APT::Get::Assume-Yes "true";' >> /etc/apt/apt.conf.d/90-auto-yes
     - apt update -qq && apt install -qqy sudo

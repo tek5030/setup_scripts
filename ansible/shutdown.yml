@@ -1,0 +1,10 @@
+---
+- name: Shut down all hosts
+  hosts: labtops
+  tasks:
+    - name: Shutdown!
+      community.general.shutdown:
+        delay: 10
+      vars:
+        ansible_become: true
+...

@@ -1,0 +1,9 @@
+---
+- name: "GTSAM : Generate build script"
+  ansible.builtin.template:
+    src: gtsam.j2
+    dest: "{{ scripts_destination }}/{{ scripts_names.gtsam }}"
+    mode: '700'
+    owner: "{{ ansible_user }}"
+  notify: Install gtsam
+...

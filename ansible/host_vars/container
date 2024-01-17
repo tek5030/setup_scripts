@@ -1,0 +1,10 @@
+---
+ansible_user: pluto
+ansible_host: 172.17.0.2
+ansible_password:  "{{ vault_ansible_password }}"
+ansible_sudo_pass: "{{ vault_ansible_password }}"
+
+scripts_opencv_with_cuda: True
+scripts_opencv_cuda_arch_bin: 8.6
+docker_nvidia_docker: True
+...

@@ -1,0 +1,17 @@
+scripts_names:
+  all: 00-run-complete-setup
+  cmake: 01-install-newer-cmake
+  eigen: 02-install-eigen
+  sophus: 03-install-sophus
+  opencv: 04-build-opencv
+  gglib: 05-install-geographiclib
+  gtsam: 06-install-gtsam
+  rs2: 07-install-realsense
+  camlib: 08-install-camera-library
+
+scripts_cmake_apt_key_url: https://apt.kitware.com/keys/kitware-archive-latest.asc
+scripts_cmake_apt_keyring: /usr/share/keyrings/kitware-archive-keyring.gpg
+scripts_cmake_apt_repository: >-
+  deb [signed-by={{ scripts_cmake_apt_keyring }}]
+  https://apt.kitware.com/ubuntu/ {{ ansible_distribution_release }} main
+scripts_cmake_apt_list: /etc/apt/sources.list.d/kitware.list

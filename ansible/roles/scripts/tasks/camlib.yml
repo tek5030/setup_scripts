@@ -1,0 +1,9 @@
+---
+- name: "Camlib : Generate build script"
+  ansible.builtin.template:
+    src: camlib.j2
+    dest: "{{ scripts_destination }}/{{ scripts_names.camlib }}"
+    mode: '700'
+    owner: "{{ ansible_user }}"
+  notify: Install camlib
+...

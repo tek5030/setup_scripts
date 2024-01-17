@@ -1,0 +1,6 @@
+---
+ansible_user: "{{ lookup('ansible.builtin.env', 'USER', default=Undefined) }}"
+
+scripts_opencv_with_cuda: False
+scripts_opencv_cuda_arch_bin: 7.5
+...

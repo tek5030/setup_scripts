@@ -1,0 +1,21 @@
+---
+- name: Welcome
+  hosts: localhost
+  tasks:
+    - name: Ensure Ubuntu is >= 18
+      ansible.builtin.assert:
+        that:
+          - "ansible_distribution == 'Ubuntu'"
+          - "ansible_distribution_major_version >= '18'"
+    - name: Hello!
+      ansible.builtin.debug:
+        msg: |
+          Hello, {{ ansible_user }} on
+          {{ ansible_distribution }} {{ ansible_distribution_version }} ({{ ansible_distribution_release }})
+          {{ 'arm64' if ansible_architecture == 'aarch64' else ansible_architecture }}!
+
+- name: Generate build scripts
+  hosts: localhost
+  roles:
+    - scripts
+...

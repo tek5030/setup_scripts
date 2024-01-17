@@ -1,0 +1,13 @@
+---
+- name: Install APT packages
+  ansible.builtin.apt:
+    pkg: "{{ tek5030_essential_apt_packages }}"
+    state: present
+
+- name: Purge undesired APT packages
+  ansible.builtin.apt:
+    pkg: "{{ tek5030_undesired_apt_packages }}"
+    state: absent
+    purge: true
+    autoremove: true
+    autoclean: true
