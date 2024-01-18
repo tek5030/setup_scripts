@@ -1,0 +1,17 @@
+---
+- name: Run the equivalent of "apt-get update"
+  ansible.builtin.apt:
+    update_cache: true
+
+- name: Remove keyring file
+  ansible.builtin.file:
+    path: "{{ cmake_apt_keyring }}*"
+    state: absent
+
+- name: Install keyring package
+  ansible.builtin.apt:
+    pkg:
+      - kitware-archive-keyring
+    state: present
+    update_cache: false
+...

@@ -1,0 +1,36 @@
+---
+- name: Create destination directory if it does not exist
+  ansible.builtin.file:
+    path: "{{ scripts_destination }}"
+    state: directory
+    owner: "{{ ansible_user }}"
+    mode: '0755'
+
+- name: Include task all
+  ansible.builtin.include_tasks: all.yml
+
+- name: Include task cmake
+  ansible.builtin.include_tasks: cmake.yml
+
+- name: Include task eigen
+  ansible.builtin.include_tasks: eigen.yml
+
+- name: Include task sophus
+  ansible.builtin.include_tasks: sophus.yml
+
+- name: Include task opencv
+  ansible.builtin.include_tasks: opencv.yml
+
+- name: Include task gglib
+  ansible.builtin.include_tasks: gglib.yml
+
+- name: Include task gtsam
+  ansible.builtin.include_tasks: gtsam.yml
+
+- name: Include task rs2
+  ansible.builtin.include_tasks: rs2.yml
+
+- name: Include task camlib
+  ansible.builtin.include_tasks: camlib.yml
+
+...

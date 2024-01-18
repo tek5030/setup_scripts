@@ -1,0 +1,19 @@
+---
+- name: Parse git-prompt template
+  ansible.builtin.set_fact:
+    git_prompt: "{{ lookup('template', 'templates/git-prompt.j2') }}"
+
+- name: Clone bash-git-prompt
+  become: false
+  ansible.builtin.git:
+    repo: https://github.com/magicmonty/bash-git-prompt.git
+    dest: /home/{{ ansible_user }}/.bash-git-prompt
+    depth: 1
+    version: master
+
+- name: Add bash-git-prompt to .bashrc
+  ansible.builtin.blockinfile:
+    dest: /home/{{ ansible_user }}/.bashrc
+    content: "{{ git_prompt }}"
+    state: present
+...

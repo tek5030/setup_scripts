@@ -1,0 +1,5 @@
+---
+- name: Install keyring package
+  ansible.builtin.include_tasks: tasks/install-keyring-package.yml
+  args: { apply: { become: true} }
+...

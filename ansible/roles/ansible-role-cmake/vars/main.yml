@@ -1,0 +1,5 @@
+---
+cmake_apt_key_url: https://apt.kitware.com/keys/kitware-archive-latest.asc
+cmake_apt_keyring: /usr/share/keyrings/kitware-archive-keyring.gpg
+cmake_apt_repository: "deb [signed-by={{ cmake_apt_keyring }}] https://apt.kitware.com/ubuntu/ {{ ansible_distribution_release }} main"
+...

@@ -1,0 +1,9 @@
+---
+collections:
+  - community.docker
+  - community.general
+  - ansible.posix
+
+roles:
+  - name: nvidia.nvidia_driver
+...

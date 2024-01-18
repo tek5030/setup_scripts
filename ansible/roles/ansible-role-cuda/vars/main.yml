@@ -1,0 +1,20 @@
+---
+# https://docs.nvidia.com/cuda/cuda-installation-guide-linux/#network-repo-installation-for-ubuntu
+# https://docs.nvidia.com/deeplearning/cudnn/install-guide/index.html#prerequisites
+# https://developer.nvidia.com/rdp/cudnn-download
+cuda_distro: "ubuntu{{ ansible_distribution_major_version }}04"
+cuda_arch: "{{ 'arm64' if ansible_architecture == 'aarch64' else ansible_architecture }}"
+cuda_apt_key_url: https://developer.download.nvidia.com/compute/cuda/repos/{{ cuda_distro }}/{{ cuda_arch }}/cuda-archive-keyring.gpg
+cuda_apt_keyring: /etc/apt/keyrings/cuda-archive-keyring.gpg
+cuda_apt_repository: "deb [signed-by={{ cuda_apt_keyring }}] https://developer.download.nvidia.com/compute/cuda/repos/{{ cuda_distro }}/{{ cuda_arch }}/ /"
+cuda_repo_filename: cuda-{{ cuda_distro }}-{{ cuda_arch }}
+
+cudnn_version: "8.9.7.*"
+cuda_version: "12.2"
+cuda_pkgs:
+  - "cuda-toolkit-{{ cuda_version | replace('.', '-') }}"
+  - "libcudnn8={{ cudnn_version }}-1+cuda{{ cuda_version }}"
+cuda_dev_pkgs:
+  - "cuda-toolkit-{{ cuda_version | replace('.', '-') }}"
+  - "libcudnn8-dev={{ cudnn_version }}-1+cuda{{ cuda_version }}"
+...

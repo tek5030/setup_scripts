@@ -1,7 +1,10 @@
 # setup_scripts
-Welcome to TEK5030 `setup_scripts`. This directory contains scripts for installing the course's software dependencies on Ubuntu 18.04.
+## Introduction
+Welcome to TEK5030 `setup_scripts`!
+This directory contains scripts for installing the course's software dependencies on Ubuntu 22.04.
 
-We recommend that you don't run the scripts blindly, but instead follow the information on this page. We will go through all required steps so that you might learn something along the way.
+**We recommend that you don't run the scripts blindly, but instead follow the information on this page.**   
+We will go through all required steps so that you might learn something along the way.
 
 We will install the following:
 
@@ -13,7 +16,8 @@ We will install the following:
 - GTSAM (Factor Graphs)
 - And maybe some more...
 
-It is assumed that you have a fresh install of Ubuntu 18.04 with nothing else on it, so we are starting from scratch. We will use a Terminal window for all our actions, so go ahead and open a new Terminal window (`Ctrl` + `Alt` + `T`).
+It is assumed that you have a fresh install of Ubuntu 22.04 with nothing else on it, so we are starting from scratch.
+We will use a Terminal window for all our actions, so go ahead and open a new Terminal window (`Ctrl` + `Alt` + `T`).
 
 It should be ok to just copy-paste the commands into your terminal in order to avoid typos.
 
@@ -23,59 +27,61 @@ some_command \
   more \
   things
 ```
-This is just a line continuation symbol, which is used for clarity and readability, so the example above is equivalent to
+This is just a line continuation symbol, which is used for clarity and readability,
+so the example above is equivalent to
 ```bash
 some_command more things
 ```
 
-## Installation step by step
-
-### Add additional apt repositories
-In Ubuntu, we install packages (libraries etc.) using a tool called `apt`. The packages are downloaded from one or more apt software repositories. An APT repository is a network server or a local directory containing deb packages and metadata files that are readable by the APT tools.
-While there are thousands of application available in the default Ubuntu repositories, sometimes you may need to install software from a 3rd party repository, for example in order to get a newer version of a library than the "Long Term Support"-version available through the default repositories.
-
-Most repositories are providing a public key to authenticate downloaded packages. The key must also be downloaded and imported.
+### About additional apt repositories
+In Ubuntu, we install packages (libraries etc.) using a tool called `apt`.
+The packages are downloaded from one or more apt software repositories.
+An APT repository is a network server or a local directory containing deb packages
+and metadata files that are readable by the APT tools.
+While there are thousands of application available in the default Ubuntu repositories,
+sometimes you may need to install software from a 3rd party repository.
+For example, we can download and install drivers and SDK for Intel® RealSense™ cameras from such a repository.
+Most repositories are providing a public key to authenticate downloaded packages.
+The key must also be downloaded and imported.
 
 If you are curious, read more about repositories [on the internet][How To Add Apt Repository In Ubuntu].
 
+## Installation step by step
+
 #### Add Kitware repository for installation of newer CMake [[1]][cmake]
-The CMake version available from the default repository is version 3.10, but as CMake frequently releases important updates and bugfixes, we have nothing to lose and much to win by installing a newer version. The easiest way to do this is to add their APT repository and install from there.
+The CMake version available from the default repository is version 3.22, which is not bad at all.
+However, useful updates and bugfixes are frequently released for CMake,
+so we have much to win and nothing to lose by installing a newer version.
+The easiest way to do this is to add their APT repository and install from there.
 The procedure is updated from time to time, so it is wise to check out [https://apt.kitware.com/][cmake] to see the latest and greatest.
+We can employ their installation script to save us some typing. 
 
 ```bash
 # Install required packages in order to download and install the new repo.
 sudo apt update
-sudo apt install gpg wget
+sudo apt install curl
 
-# Download and install the key
-wget -O - https://apt.kitware.com/keys/kitware-archive-latest.asc 2>/dev/null | gpg --dearmor - | sudo tee /usr/share/keyrings/kitware-archive-keyring.gpg >/dev/null
-
-# Add the repository
-echo 'deb [signed-by=/usr/share/keyrings/kitware-archive-keyring.gpg] https://apt.kitware.com/ubuntu/ bionic main' | sudo tee /etc/apt/sources.list.d/kitware.list >/dev/null
-sudo apt update
-
-# Install the kitware-archive-keyring package to ensure that your keyring stays up to date as they rotate keys:
-sudo rm /usr/share/keyrings/kitware-archive-keyring.gpg
-sudo apt install kitware-archive-keyring
-
+curl -sSfL https://apt.kitware.com/kitware-archive.sh | sudo bash
 ```
 
 ### Add packages
 
 #### Install compiler, cmake, curl and git
-we will install a few basic tools before proceeding with installation of the dependencies. The `-y` (or `--yes`) means that we don't want to be propmpted for whether we _really_ want to install or not.
+we will install a few basic tools before proceeding with installation of the dependencies.
+The `-y` (or `--yes`) means that we don't want to be propmpted for whether we _really_ want to install or not.
 
 ```bash
 sudo apt install -y \
   build-essential \
+  ccache \
   cmake \
-  curl \
-  git \
-  wget
+  git
 ```
 
 #### Install Eigen
-We can install a sufficient version of Eigen with `apt`. In addition, we install blas and lapack.
+We can install a sufficient version of Eigen with `apt`.
+In addition, we install blas and lapack.
+
 ```bash
 sudo apt install -y \
   libblas-dev \
@@ -84,13 +90,19 @@ sudo apt install -y \
 ```
 
 #### Install Sophus
-Sophus must be installed from source. We use `git` and `cmake` for this. Use `man cmake` or `cmake --help` in order to learn more.
+Sophus must be installed from source.
+We use `git` and `cmake` for this.
+Use `man cmake` or `cmake --help` in order to learn more.
 Note that Eigen must be installed before we try to install Sophus.
-We specify some options to CMake in order to configure the build according to our needs.  A library may support more or less options, but the three we see below are pretty common for many libraries.
+We specify some options to CMake in order to configure the build according to our needs.
+A library may support more or less options, but the three we see below are pretty common for many libraries.
 
-On the second last line, we utilize `cmake` also for compiling the software, using the `--build` flag. (In Ubuntu, it is usually the same as using `make`, so you can assume that `cmake --build .` is equal to `make`. Anyhow, the actual compiler (like `gcc`, `g++` or `clang` will eventually be called under the hood, but that is another story).
+On the second last line, we utilize `cmake` also for compiling the software, using the `--build` flag.
 
 ```bash
+sudo apt install -y \
+  libfmt-dev
+
 # Clone the repository (download the code) from GitHub.
 git clone --depth 1 https://github.com/strasdat/Sophus.git
 # Configure the project
@@ -106,18 +118,12 @@ sudo rm -rf Sophus ~/.cmake/packages/Sophus
 ```
 
 #### Install GeographicLib
-We are alo installing GeographicLib from source, but instead of cloning via `git` we are downloading the source code using `curl`.
-Using the pipe, we are immedately extracting the downloaded `tar.gz` without it hanging around. It will take some time.
+On Ubuntu 22.04, we can install a sufficiently new version of geographiclib via `apt`, so we don't have to build from source.
 
 ```bash
-curl -fsL https://sourceforge.net/projects/geographiclib/files/distrib/GeographicLib-1.51.tar.gz \
-| tar -zx
-
-cmake -S GeographicLib-1.51 -B GeographicLib-1.51/build -DCMAKE_BUILD_TYPE=Release
-# Copy the files to /usr/local/...
-sudo cmake --build GeographicLib-1.51/build --config Release --target install
-# Delete the downloaded files
-sudo rm -rf GeographicLib-1.51
+sudo apt install -y \
+  libgeographic-dev \
+  geographiclib-tools
 ```
 
 #### Install GTSAM
@@ -125,107 +131,117 @@ GTSAM has some additional dependencies that we must install before trying to com
 ```bash
 sudo apt install -y \
   libboost-all-dev \
-  libtbb2 \
-  libtbb-dev
+  libtbb2-dev
 ```
 Now we can go on.
 ```bash
-git clone -b 4.1.1 --depth 1 https://github.com/borglab/gtsam.git
-cmake -S gtsam -B gtsam/build \
+curl -fsSL https://github.com/borglab/gtsam/archive/refs/tags/4.2.tar.gz | tar -zx
+cmake -S gtsam-4.2 -B gtsam-4.2/build \
   -DGTSAM_BUILD_EXAMPLES_ALWAYS=OFF \
   -DGTSAM_BUILD_TESTS=OFF \
   -DGTSAM_BUILD_WITH_MARCH_NATIVE=OFF \
   -DGTSAM_USE_SYSTEM_EIGEN=ON \
   -DGTSAM_WITH_EIGEN_MKL=OFF
-cmake --build gtsam/build -- -j$(nproc)
-sudo cmake --build gtsam/build --target install
-rm -rf gtsam
+
+cmake --build gtsam-4.2/build -- -j$(nproc)
+sudo cmake --build gtsam-4.2/build --target install
+rm -rf gtsam-4.2
 ```
 
-#### Install OpenCV 
+#### Install OpenCV
+[OpenCV] is the world's biggest computer vision library.
+During configuration, it will search the computer for other installed libraries that may extend the capabilities of OpenCV.
+Thus, we have a fairly long list of dependencies that we will install before compiling OpenCV.
+
 ##### Install dependencies
 ```bash
-# Install compiler
-sudo apt-get update && sudo apt-get install -y \
-  build-essential
+sudo apt update
 
-# Install required
-sudo apt install -y \
-  cmake \
-  cmake-qt-gui \
-  git \
-  libavcodec-dev \
-  libavformat-dev \
-  libgtk2.0-dev \
-  libswscale-dev \
-  pkg-config
+# Required
+sudo apt install -y build-essential ccache cmake git
 
-# Install boost
-sudo apt install -y \
-  libboost-all-dev
+# GUI
+sudo apt install -y libgtk-3-dev libvtk7-dev
 
-# Install optional
-sudo apt install -y \
-  libdc1394-22-dev \
-  libjpeg-dev \
-  libpng-dev \
-  libtbb2 \
-  libtbb-dev \
-  libtiff-dev \
-  libvtk7-dev \
-  mesa-utils \
-  python3-dev \
-  python3-numpy \
-  qt5-default
-  
-# Install very optional
-sudo apt install -y \
-  libcanberra-gtk-module \
-  libcanberra-gtk3-module
+# Media I/O
+sudo apt install -y libgdal-dev libjpeg-dev libpng-dev libopenjp2-7-dev libopenexr-dev libtiff-dev libwebp-dev
+
+# Video I/O
+sudo apt install -y libavcodec-dev libavformat-dev libavutil-dev libswscale-dev libgphoto2-dev libcanberra-gtk3-module
+
+# Parallel framework
+sudo apt install -y libtbb2-dev
+
+# Other third-party libraries
+sudo apt install -y libva-dev libeigen3-dev libtesseract-dev
 ```
+
+##### CUDA support
+If you have a computer with a NVIDIA GPU, you can compile OpenCV with CUDA in order to enable GPU processing and `dnn` processing.
+Follow the instructions provided by https://developer.nvidia.com/cuda-downloads in order to get CUDA and cuDNN on your computer.
+See also the [CUDA installation guide](https://docs.nvidia.com/cuda/cuda-installation-guide-linux/#ubuntu).
 
 ##### Compile OpenCV
 ```bash
-# Convenience variable
-# If variable OpenCV_VERSION is not set, set it to 4.5.5
-tag=${OpenCV_VERSION:-4.5.5}
+# Convenience variable. If variable OpenCV_VERSION is not set, set it to a default value.
+tag=${OpenCV_VERSION:-4.9.0}
 
 # Download opencv sources
-git clone -b ${tag} --depth 1 https://github.com/opencv/opencv.git opencv-${tag}
-git clone -b ${tag} --depth 1 https://github.com/opencv/opencv_contrib.git opencv_contrib-${tag}
+curl -fSL https://github.com/opencv/opencv/archive/refs/tags/${tag}.tar.gz | tar -zx
+curl -fSL https://github.com/opencv/opencv_contrib/archive/refs/tags/${tag}.tar.gz | tar -zx
 
-# Build OpenCV
+# Configure OpenCV
 cmake -S opencv-${tag} -B opencv-${tag}/build \
--DCPACK_MONOLITHIC_INSTALL=ON \
+-DBUILD_LIST="core,cudev,features2d,imgproc,imgcodecs,highgui,stereo,videoio,viz,xfeatures2d" \
 -DCMAKE_BUILD_TYPE=Release \
+-DOPENCV_EXTRA_MODULES_PATH="opencv_contrib-${tag}/modules/" \
+-DCMAKE_INSTALL_PREFIX="/usr/local" \
 -DBUILD_DOCS=OFF \
 -DBUILD_EXAMPLES=OFF \
 -DBUILD_JAVA=OFF \
--DBUILD_PROTOBUF=ON \
--DBUILD_TBB=ON \
--DBUILD_TESTS=OFF \
--DBUILD_PERF_TESTS=OFF \
--DOPENCV_ENABLE_NONFREE=ON \
--DOPENCV_EXTRA_MODULES_PATH="opencv_contrib-${tag}/modules/" \
--DWITH_CUDA=OFF \
--DWITH_GDAL=ON \
--DWITH_PROTOBUF=ON \
--DPROTOBUF_UPDATE_FILES=OFF \
--DWITH_QT=ON \
--DBUILD_opencv_{java,js,python}=OFF \
 -DBUILD_opencv_python2=OFF \
 -DBUILD_opencv_python3=OFF \
--DBUILD_opencv{\
-bgsegm,bioinspired,ccalib,cnn_3dobj,cvv,datasets,dnn_objdetect,dnns_easily_fooled,dpm,face,freetype,\
-fuzzy,hdf,hfs,img_hash,line_descriptor,matlab,optflow,ovis,phase_unwrapping,plot,reg,rgbd,saliency,sfm,shape,stereo,\
-structured_light,superres,surface_matching,text,tracking,videostab}=OFF \
--DBUILD_opencv_cuda{bgsegm,codec,filters,legacy,objdetect,stereo}=OFF \
--DBUILD_opencv_cudev=OFF 
+-DBUILD_PERF_TESTS=OFF \
+-DBUILD_TESTS=OFF \
+-DCPACK_GENERATOR=DEB \
+-DCPACK_MONOLITHIC_INSTALL=ON \
+-DOPENCV_ENABLE_NONFREE=ON \
+-DOPENCV_GENERATE_PKGCONFIG=ON \
+-DOPENCV_IPP_ENABLE_ALL=ON \
+-DWITH_GDAL=ON \
+-DWITH_GPHOTO2=ON \
+-DWITH_GSTREAMER=OFF \
+-DWITH_PROTOBUF=ON \
+-DBUILD_PROTOBUF=ON \
+-DWITH_QT=OFF \
+-DWITH_TBB=ON \
+-DBUILD_TBB=OFF
 
-cmake --build opencv-${tag}/build --config release -- -j $(nproc) -Wno-cpp
+# Build OpenCV (be patient)
+cmake --build opencv-${tag}/build --config release -- -j $(nproc)
+
+# Install
 sudo cmake --build opencv-${tag}/build --target install
 
+# Delete source code and build-artifacts
 rm -rf opencv*
+```
+
+##### CUDA flags
+If you have sucessfully installed CUDA, here are some additional configure options that we have used on the lab computers.
+
+**Note!** You must find [the correct compute capability](https://developer.nvidia.com/cuda-gpus)
+for your GPU and replace the value of `CUDA_ARCH_BIN`.
+
+**Note!** Make sure to get the trailing slashes correct if you append it to our previous command!
+```bash
+-DBUILD_LIST="core,cudev,features2d,imgproc,imgcodecs,highgui,stereo,videoio,viz,xfeatures2d" \
+-DWITH_CUDA=ON \
+-DWITH_CUBLAS=ON \
+-DWITH_CUDNN=ON \
+-DCUDA_TOOLKIT_ROOT_DIR="/usr/local/cuda" \
+-DCUDA_ARCH_BIN="8.6" \
+-DOPENCV_DNN_CUDA=ON
 ```
 
 ### Install CLion
@@ -238,17 +254,20 @@ sudo snap install clion --classic
 ```
 The `--classic` option is required because the CLion snap requires full access to the system, like a traditionally packaged application.
 
-Now you can start Clion by typing
-```bash
-clion &   # The ampersand makes the program run in the background, so you can close the Terminal window.
-```
-or launching it from the Applications menu in the lower right corner of your desktop (the 3x3 dots).
-
 ## Setup on other Operating Systems 
-Tek5030 does not officially support Windows, OS X or other OSs, but we have provided an Ubuntu image with dependencies already installed, which you can use with VirtualBox. Please seek more information on the course page.
+As of 2024, tek5030 does not officially support Windows, OS X or other OSs  :'(
+Neither are we supporting installations in VirtualBox or other VM's, nor providing pre-configured ISO-files.
+
+If you want to deviate from our Ubuntu 22.04-path,
+you should probably be able to solve most labs by installing dependencies via [Homebrew](https://brew.sh/) for Mac or Linux,
+but we have not tested it this year.
+
+We highly recommend using the lab computers instead of spending too much time setting up your own computer.
+
 
 ## Automated installation
-The scripts in this repo are created to install everything needed, and is tested on Ubuntu 18.04. You can run all scripts in one go, or choose to run each script separately.
+The scripts in this repo are created to install everything needed, and is tested on Ubuntu 22.04.
+You can run all scripts in one go, or choose to run each script separately.
 
 ### Run all scripts
 ```bash
@@ -265,6 +284,7 @@ For example
 
 [How To Add Apt Repository In Ubuntu]: https://linuxize.com/post/how-to-add-apt-repository-in-ubuntu/
 [cmake]: https://apt.kitware.com/
+[OpenCV]: https://opencv.org/
 [clion]: https://www.jetbrains.com/clion/
 [student-license]: https://www.jetbrains.com/community/education/#students
 [install-clion]: https://www.jetbrains.com/help/clion/installation-guide.html#snap

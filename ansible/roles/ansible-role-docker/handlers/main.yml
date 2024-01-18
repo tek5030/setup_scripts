@@ -1,0 +1,12 @@
+---
+- name: Restart docker
+  become: true
+  ansible.builtin.service:
+    name: docker
+    state: restarted
+
+- name: Enable nvidia runtime
+  become: true
+  ansible.builtin.command: "nvidia-ctk runtime configure --runtime=docker"
+  changed_when: true
+...

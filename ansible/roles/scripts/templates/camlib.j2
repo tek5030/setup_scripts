@@ -1,0 +1,15 @@
+#!/usr/bin/env bash
+# https://github.com/IntelRealSense/librealsense/blob/master/doc/distribution_linux.md
+
+install_libtek5030 () (
+    set -euxo pipefail
+    command -v sudo > /dev/null 2>&1 || { apt update && apt install --no-install-recommends -y sudo; }
+
+    [[ ! -d "camera-library" ]] && \
+    git clone --depth 1 https://github.com/tek5030/camera-library
+    cmake -S camera-library -B camera-library/build -DCMAKE_BUILD_TYPE=Release
+    sudo cmake --build camera-library/build --target install
+    rm -rf camera-library
+)
+
+install_libtek5030

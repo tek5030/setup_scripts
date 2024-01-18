@@ -1,0 +1,73 @@
+---
+- name: Install all
+  when: skip_handlers | default("false") == "false"
+  become: true
+  ansible.builtin.command:
+    chdir: "{{ scripts_destination }}"
+    cmd: "{{ scripts_destination }}/{{ scripts_names.all }}"
+  changed_when: true
+
+- name: Install cmake
+  when: skip_handlers | default("false") == "false"
+  become: true
+  ansible.builtin.command:
+    chdir: "{{ scripts_destination }}"
+    cmd: "{{ scripts_destination }}/{{ scripts_names.cmake }}"
+    creates: "{{ scripts_cmake_apt_list }}"
+
+- name: Install eigen
+  when: skip_handlers | default("false") == "false"
+  become: true
+  ansible.builtin.command:
+    chdir: "{{ scripts_destination }}"
+    cmd: "{{ scripts_destination }}/{{ scripts_names.eigen }}"
+  changed_when: true
+
+- name: Install sophus
+  when: skip_handlers | default("false") == "false"
+  become: true
+  ansible.builtin.command:
+    chdir: "{{ scripts_destination }}"
+    cmd: "{{ scripts_destination }}/{{ scripts_names.sophus }}"
+  changed_when: true
+
+- name: Install opencv
+  when: skip_handlers | default("false") == "false"
+  become: true
+  ansible.builtin.command:
+    chdir: "{{ scripts_destination }}"
+    cmd: "{{ scripts_destination }}/{{ scripts_names.opencv }}"
+  changed_when: true
+
+- name: Install gglib
+  when: skip_handlers | default("false") == "false"
+  become: true
+  ansible.builtin.command:
+    chdir: "{{ scripts_destination }}"
+    cmd: "{{ scripts_destination }}/{{ scripts_names.gglib }}"
+  changed_when: true
+
+- name: Install gtsam
+  when: skip_handlers | default("false") == "false"
+  become: true
+  ansible.builtin.command:
+    chdir: "{{ scripts_destination }}"
+    cmd: "{{ scripts_destination }}/{{ scripts_names.gtsam }}"
+  changed_when: true
+
+- name: Install rs2
+  when: skip_handlers | default("false") == "false"
+  become: true
+  ansible.builtin.command:
+    chdir: "{{ scripts_destination }}"
+    cmd: "{{ scripts_destination }}/{{ scripts_names.rs2 }}"
+  changed_when: true
+
+- name: Install camlib
+  when: skip_handlers | default("false") == "false"
+  become: true
+  ansible.builtin.command:
+    chdir: "{{ scripts_destination }}"
+    cmd: "{{ scripts_destination }}/{{ scripts_names.camlib }}"
+  changed_when: true
+...

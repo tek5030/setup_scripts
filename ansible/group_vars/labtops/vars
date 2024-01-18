@@ -1,0 +1,11 @@
+---
+ansible_user: student
+ansible_password:  "{{ vault_ansible_password }}"
+ansible_sudo_pass: "{{ vault_ansible_password }}"
+
+scripts_destination: "/home/{{ ansible_user }}/setup_scripts"
+scripts_opencv_with_cuda: True
+scripts_opencv_cuda_arch_bin: 7.5
+
+docker_nvidia_docker: True
+...

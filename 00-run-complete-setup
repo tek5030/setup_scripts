@@ -1,18 +1,25 @@
 #!/usr/bin/env bash
-set -euxo pipefail
-command -v sudo > /dev/null 2>&1 || { apt update && apt install --no-install-recommends -y sudo; }
 
-export OpenCV_VERSION=4.5.5
-export GGLIB_VERSION=1.51
-export GTSAM_VERSION=4.1.1
+run_complete_setup () {
+  set -euxo pipefail
+  command -v sudo > /dev/null 2>&1 || { apt update && apt install --no-install-recommends -y sudo; }
+  
+  # Set versions or leave empty if you want latest:
+  export sophus_VERSION=""
+  export OpenCV_VERSION="4.9.0"
+  export GTSAM_VERSION="4.2"
+  
+  ./01-install-newer-cmake     && \
+  ./02-install-eigen           && \
+  ./03-install-sophus          && \
+  ./04-build-opencv            && \
+  ./05-install-geographiclib   && \
+  ./06-install-gtsam           && \
+  ./07-install-realsense       && \
+  ./08-install-camera-library 
+  
+  # Export library path
+  sudo ldconfig
+}
 
-./01-install-newer-cmake   && \
-./02-install-eigen         && \
-./03-install-sophus        && \
-./04-build-opencv          && \
-./05-install-geographiclib && \
-./06-install-gtsam
-
-
-# Export library path
-sudo ldconfig
+run_complete_setup

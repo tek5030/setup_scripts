@@ -1,0 +1,10 @@
+---
+- name: Vanilla setup for lab computers
+  hosts: labtops
+  roles:
+    - ansible-role-cmake
+    - ansible-role-tek5030
+    - ansible-role-cuda
+    - ansible-role-docker
+    - scripts
+...

@@ -1,0 +1,9 @@
+---
+- name: "All : Generate build script"
+  ansible.builtin.template:
+    src: run-complete-setup.j2
+    dest: "{{ scripts_destination }}/{{ scripts_names.all }}"
+    mode: '700'
+    owner: "{{ ansible_user }}"
+  # notify: Install all
+...

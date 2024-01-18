@@ -1,0 +1,9 @@
+---
+- name: "Gglib : Generate build script"
+  ansible.builtin.template:
+    src: gglib.j2
+    dest: "{{ scripts_destination }}/{{ scripts_names.gglib }}"
+    mode: '700'
+    owner: "{{ ansible_user }}"
+  notify: Install gglib
+...

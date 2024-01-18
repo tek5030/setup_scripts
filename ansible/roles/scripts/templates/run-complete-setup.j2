@@ -1,0 +1,25 @@
+#!/usr/bin/env bash
+
+run_complete_setup () {
+  set -euxo pipefail
+  command -v sudo > /dev/null 2>&1 || { apt update && apt install --no-install-recommends -y sudo; }
+  
+  # Set versions or leave empty if you want latest:
+  export sophus_VERSION="{{ scripts_sophus_tag }}"
+  export OpenCV_VERSION="{{ scripts_opencv_tag }}"
+  export GTSAM_VERSION="{{ scripts_gtsam_tag }}"
+  
+  ./{{ "{:<26}".format(scripts_names.cmake) }} && \
+  ./{{ "{:<26}".format(scripts_names.eigen) }} && \
+  ./{{ "{:<26}".format(scripts_names.sophus) }} && \
+  ./{{ "{:<26}".format(scripts_names.opencv) }} && \
+  ./{{ "{:<26}".format(scripts_names.gglib) }} && \
+  ./{{ "{:<26}".format(scripts_names.gtsam) }} && \
+  ./{{ "{:<26}".format(scripts_names.rs2) }} && \
+  ./{{ "{:<26}".format(scripts_names.camlib) }}
+  
+  # Export library path
+  sudo ldconfig
+}
+
+run_complete_setup

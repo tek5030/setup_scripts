@@ -9,16 +9,16 @@ install_cmake () (
     sudo apt-get install -y ca-certificates curl gpg
 
     # Download and install the key
-    curl -sSfL https://apt.kitware.com/keys/kitware-archive-latest.asc | gpg --dearmor - \
-    | sudo tee /usr/share/keyrings/kitware-archive-keyring.gpg  >/dev/null
+    curl -sSfL {{ scripts_cmake_apt_key_url }} | gpg --dearmor - \
+    | sudo tee {{ scripts_cmake_apt_keyring }}  >/dev/null
 
     # Add the repository
     source /etc/os-release
-    echo 'deb [signed-by=/usr/share/keyrings/kitware-archive-keyring.gpg] https://apt.kitware.com/ubuntu/ jammy main' | sudo tee /etc/apt/sources.list.d/kitware.list >/dev/null
+    echo '{{ scripts_cmake_apt_repository }}' | sudo tee {{ scripts_cmake_apt_list }} >/dev/null
     sudo apt-get update
 
     # Install the kitware-archive-keyring package to ensure that your keyring stays up to date as they rotate keys:
-    sudo rm /usr/share/keyrings/kitware-archive-keyring.gpg
+    sudo rm {{ scripts_cmake_apt_keyring }}
     sudo apt-get install -y kitware-archive-keyring
 
     # Finally, install CMake : )

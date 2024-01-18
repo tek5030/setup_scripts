@@ -1,0 +1,60 @@
+#!/usr/bin/env bash
+# Build OpenCV from source, and install system wide.
+# This version of the script is tailored for {{ ansible_distribution }} {{ ansible_distribution_version }} ({{ ansible_distribution_release }}).
+
+build_opencv () (
+  set -eu
+  command -v sudo > /dev/null 2>&1 || { apt -qq update && apt install --no-install-recommends -y sudo; }
+
+  sudo apt update
+
+  # Required
+  {{ scripts_opencv_apt_required }}
+
+  # GUI
+  {{ scripts_opencv_apt_gui }}
+
+  # Media I/O
+  {{ scripts_opencv_apt_media_io }}
+
+  # Video I/O
+  {{ scripts_opencv_apt_video_io }}
+
+  # Parallel framework
+  {{ scripts_opencv_apt_parallel }}
+
+  # Other third-party libraries
+  {{ scripts_opencv_apt_3rd_party }}
+
+  # Download opencv sources
+  sudo apt install -qqy jq
+  
+  local latest=$(curl -sSf https://api.github.com/repos/opencv/opencv/releases/latest | jq -r '.tag_name')
+  local tag="${OpenCV_VERSION:-${latest}}"
+  
+  [[ ! -d "opencv-${tag}" ]] && \
+  curl -SfL https://github.com/opencv/opencv/archive/refs/tags/${tag}.tar.gz | tar -zx
+
+  [[ ! -d "opencv_contrib-${tag}" ]] && \
+  curl -SfL https://github.com/opencv/opencv_contrib/archive/refs/tags/${tag}.tar.gz | tar -zx
+
+  # Configure OpenCV
+  {{(
+     (scripts_opencv_cmake_options + scripts_opencv_cuda_cmake_options) if scripts_opencv_with_cuda
+     else scripts_opencv_cmake_options
+    )|join(' \\\n  -D')
+  }}
+  
+  # Build OpenCV
+  cmake --build opencv-${tag}/build --config release -- -j $(nproc)
+  
+  # Install
+  sudo cmake --build opencv-${tag}/build --target install
+
+  # If executed in Dockerfile or container, remove artifacts
+  if [[ -f /.dockerenv ]]; then 
+      rm -rf opencv*
+  fi
+)
+
+build_opencv

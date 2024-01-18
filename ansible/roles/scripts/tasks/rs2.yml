@@ -1,0 +1,9 @@
+---
+- name: "Realsense2 : Generate build script"
+  ansible.builtin.template:
+    src: rs2.j2
+    dest: "{{ scripts_destination }}/{{ scripts_names.rs2 }}"
+    mode: '700'
+    owner: "{{ ansible_user }}"
+  notify: Install rs2
+...

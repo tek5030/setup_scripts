@@ -1,0 +1,47 @@
+---
+- name: Assert OS is compatible
+  ansible.builtin.assert:
+    that:
+      - "ansible_distribution == 'Ubuntu'"
+      - "ansible_distribution_major_version >= '20'"
+
+# https://ubuntu.com/server/docs/nvidia-drivers-installation
+- name: Install nvidia-driver
+  become: true
+  ansible.builtin.command:
+    cmd: "ubuntu-drivers install"
+    creates: /proc/driver/nvidia/version
+  notify:
+    - Reboot machine
+
+- name: CUDA dependencies
+  become: true
+  ansible.builtin.apt:
+    pkg:
+      - ca-certificates
+      - gpg
+      - zlib1g
+    state: present
+
+- name: CUDA APT repo
+  become: true
+  block:
+    - name: CUDA | apt key
+      ansible.builtin.apt_key:
+        url: "{{ cuda_apt_key_url }}"
+        keyring: "{{ cuda_apt_keyring }}"
+        state: present
+
+    - name: CUDA | apt repository
+      ansible.builtin.apt_repository:
+        repo: "{{ cuda_apt_repository }}"
+        filename: "{{ cuda_repo_filename }}"
+        state: present
+
+- name: CUDA packages
+  become: true
+  ansible.builtin.apt:
+    name: "{{ cuda_dev_pkgs }}"
+    state: present
+    update_cache: true
+...

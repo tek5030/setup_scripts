@@ -1,0 +1,38 @@
+---
+- name: Kitware dependencies
+  become: true
+  ansible.builtin.apt:
+    pkg:
+      - ca-certificates
+      - gpg
+      - wget
+    state: present
+
+- name: Kitware APT repo
+  become: true
+  block:
+    - name: Kitware | apt key
+      ansible.builtin.apt_key:
+        url: "{{ cmake_apt_key_url }}"
+        keyring: "{{ cmake_apt_keyring }}"
+        state: present
+      notify: Install keyring package
+
+    - name: Kitware | apt repository
+      ansible.builtin.apt_repository:
+        repo: "{{ cmake_apt_repository }}"
+        filename: kitware
+        state: present
+
+    - name: Flush handlers
+      ansible.builtin.meta: flush_handlers
+
+- name: Install CMake
+  become: true
+  ansible.builtin.apt:
+    pkg:
+      - cmake
+    state: present
+    update_cache: true
+
+...
