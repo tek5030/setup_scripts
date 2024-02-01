@@ -21,7 +21,7 @@ build_opencv () (
   sudo apt install -y libavcodec-dev libavformat-dev libavutil-dev libswscale-dev libgphoto2-dev libcanberra-gtk3-module
 
   # Parallel framework
-  sudo apt install -y libtbb2-dev
+  sudo apt install -y libtbb-dev libtbb2
 
   # Other third-party libraries
   sudo apt install -y libva-dev libeigen3-dev libtesseract-dev
