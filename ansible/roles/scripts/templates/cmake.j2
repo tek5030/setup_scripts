@@ -14,7 +14,7 @@ install_cmake () (
 
     # Add the repository
     source /etc/os-release
-    echo '{{ scripts_cmake_apt_repository }}' | sudo tee {{ scripts_cmake_apt_list }} >/dev/null
+    echo "{{ scripts_cmake_apt_repository }}" | sudo tee {{ scripts_cmake_apt_list }} >/dev/null
     sudo apt-get update
 
     # Install the kitware-archive-keyring package to ensure that your keyring stays up to date as they rotate keys:

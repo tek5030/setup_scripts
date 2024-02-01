@@ -1,0 +1,106 @@
+---
+
+scripts_opencv_build_list:
+  - core
+  - cudev
+  - features2d
+  - imgproc
+  - imgcodecs
+  - highgui
+  - stereo
+  - videoio
+  - viz
+  - xfeatures2d
+
+scripts_opencv_cmake_options:
+  - cmake -S opencv-${tag} -B opencv-${tag}/build
+  - BUILD_LIST="{{ scripts_opencv_build_list | join(',') }}"
+  - CMAKE_BUILD_TYPE=Release
+  - OPENCV_EXTRA_MODULES_PATH="opencv_contrib-${tag}/modules/"
+  - CMAKE_INSTALL_PREFIX="{{ scripts_opencv_install_prefix }}"
+  - BUILD_DOCS=OFF
+  - BUILD_EXAMPLES=OFF
+  - BUILD_JAVA=OFF
+  - BUILD_opencv_python2=OFF
+  - BUILD_opencv_python3=OFF
+  - BUILD_PERF_TESTS=OFF
+  - BUILD_TESTS=OFF
+  - CPACK_GENERATOR=DEB
+  - CPACK_MONOLITHIC_INSTALL=ON
+  - OPENCV_ENABLE_NONFREE=ON
+  - OPENCV_GENERATE_PKGCONFIG=ON
+  - OPENCV_IPP_ENABLE_ALL=ON
+  - WITH_GDAL=ON
+  - WITH_GPHOTO2=ON
+  - WITH_GSTREAMER=OFF
+  - WITH_PROTOBUF=ON
+  - BUILD_PROTOBUF=ON
+  - WITH_QT=OFF
+  - WITH_TBB=ON
+  - BUILD_TBB=OFF
+
+scripts_opencv_cuda_cmake_options:
+  - WITH_CUDA=ON
+  - WITH_CUBLAS=ON
+  - WITH_CUDNN=ON
+  - CUDA_TOOLKIT_ROOT_DIR="{{ scripts_opencv_cuda_toolkit_root_dir }}"
+  - CUDA_ARCH_BIN="{{ scripts_opencv_cuda_arch_bin }}"
+  - OPENCV_DNN_CUDA=ON
+
+scripts_opencv_apt_required: >-
+  sudo apt install -y
+  build-essential
+  ccache
+  cmake
+  git
+
+scripts_opencv_apt_gui: >-
+  sudo apt install -y
+  libgtk-3-dev
+  libvtk7-dev
+
+scripts_opencv_apt_media_io: >-
+  sudo apt install -y
+  libgdal-dev
+  libjpeg-dev
+  libpng-dev
+  libopenjp2-7-dev
+  libopenexr-dev
+  libtiff-dev
+  libwebp-dev
+
+scripts_opencv_apt_video_io: >-
+  sudo apt install -y
+  libavcodec-dev
+  libavformat-dev
+  libavutil-dev
+  libswscale-dev
+  libgphoto2-dev
+  libcanberra-gtk3-module
+# libgst{reamer,reamer-plugins-base,rtspserver-}1.0-dev gstreamer1.0-{libav,plugins-bad,tools}
+
+scripts_opencv_apt_parallel: >-
+  sudo apt install -y
+  libtbb-dev
+  libtbb2
+
+scripts_opencv_apt_3rd_party: >-
+  sudo apt install -y
+  libva-dev
+  libeigen3-dev
+  libtesseract-dev
+# libatlas-base-dev
+# libblas64-dev
+# libopenblas-dev
+# libopenblas64-dev
+
+scripts_opencv_apt_python: >-
+  sudo apt install -y
+  python3-numpy
+
+
+# Python
+# {{ scripts_opencv_apt_python }}
+
+# Create DEB
+# cmake --build opencv-${tag}/build --config release --target package

@@ -13,5 +13,5 @@ scripts_cmake_apt_key_url: https://apt.kitware.com/keys/kitware-archive-latest.a
 scripts_cmake_apt_keyring: /usr/share/keyrings/kitware-archive-keyring.gpg
 scripts_cmake_apt_repository: >-
   deb [signed-by={{ scripts_cmake_apt_keyring }}]
-  https://apt.kitware.com/ubuntu/ {{ ansible_distribution_release }} main
+  https://apt.kitware.com/ubuntu/ ${UBUNTU_CODENAME} main
 scripts_cmake_apt_list: /etc/apt/sources.list.d/kitware.list

@@ -3,6 +3,12 @@
 
 install_realsense () (
     set -euxo pipefail
+
+    # Assumes the base docker image already contains realsense
+    if [[ -f /.dockerenv ]]; then
+      return
+    fi
+
     command -v sudo > /dev/null 2>&1 || { apt update && apt install --no-install-recommends -y sudo; }
 
     # Install required packages in order to download and install the new repo.
@@ -21,10 +27,7 @@ install_realsense () (
     sudo apt-get update
 
     # Install the libraries
-    if [[ ! -f /.dockerenv ]]; then 
-      sudo apt-get install -y librealsense2-{dkms,utils}
-    fi
-    
+    sudo apt-get install -y librealsense2-{dkms,utils}
     sudo apt-get install -y librealsense2-{dev,dbg}
 )
 
